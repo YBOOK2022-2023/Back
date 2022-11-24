@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum DocumentType {
+  PICTURE
+  SOUND
+  VIDEO
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  IGNORED
+}
+
+// Prisma Models
+model User {
+  id                    Int                   @id @default(autoincrement())
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  firstname             String                @db.VarChar(100)
+  lastname              String                @db.VarChar(100)
+  email                 String                @unique
+  avatarS3Key           String                @db.VarChar(255)
+  coverPicS3Key         String                @db.VarChar(255)
+  Posts                 Post[]
+  PostLikes             PostLike[]
+  PostComment           PostComment[]
+  FromFriendship        Friendship[]          @relation("FromFriendship")
+  ToFrienship           Friendship[]          @relation("ToFriendship")
+  BlockedUsers          User[]                @relation("UserBlocks")
+  BlockedByUsers        User[]                @relation("UserBlocks")
+  ConversationsSent     Conversation[]        @relation("ConversationsSent")
+  ConversationsReceived Conversation[]        @relation("ConversationsReceived")
+  ConversationMessages  ConversationMessage[]
+}
+
+model Post {
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  htmlContent  String
+  User         User          @relation(fields: [userId], references: [id])
+  userId       Int
+  PostLikes    PostLike[]
+  PostComments PostComment[]
+}
+
+model PostLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Post      Post     @relation(fields: [postId], references: [id])
+  userId    Int
+  postId    Int
+}
+
+model PostComment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Post      Post     @relation(fields: [postId], references: [id])
+  userId    Int
+  postId    Int
+  text      String
+}
+
+model PostAttachment {
+  id    Int          @id @default(autoincrement())
+  type  DocumentType
+  s3Key String       @db.VarChar(255)
+}
+
+model Friendship {
+  id           Int              @id @default(autoincrement())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  from         User             @relation("FromFriendship", fields: [fromId], references: [id])
+  to           User             @relation("ToFriendship", fields: [toId], references: [id])
+  status       FriendshipStatus @default(PENDING)
+  fromId       Int
+  toId         Int
+  Notification Notification[]
+}
+
+model Conversation {
+  id        Int                   @id @default(autoincrement())
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  From      User                  @relation("ConversationsSent", fields: [fromId], references: [id])
+  fromId    Int
+  To        User?                 @relation("ConversationsReceived", fields: [toId], references: [id])
+  toId      Int?
+  Messages  ConversationMessage[]
+}
+
+model ConversationMessage {
+  id             Int            @id @default(autoincrement())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  Conversation   Conversation?  @relation(fields: [conversationId], references: [id])
+  conversationId Int?
+  From           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  Notification   Notification[]
+}
+
+model Notification {
+  id                    Int                  @id @default(autoincrement())
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  read                  Boolean              @default(false)
+  Friendship            Friendship?          @relation(fields: [friendshipId], references: [id])
+  friendshipId          Int?
+  Message               ConversationMessage? @relation(fields: [conversationMessageId], references: [id])
+  conversationMessageId Int?
+}
