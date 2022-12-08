@@ -6,7 +6,7 @@ export type TokenRouteParams = {
     clientId: string
 }
 
-const checkToken: RequestHandler<TokenRouteParams> = (req, res, next) =>{
+const checkToken: RequestHandler<TokenRouteParams> =  async (req, res, next) =>{
     var reqUserPoolId = req.params.userPoolId;
     var reqClientId = req.params.clientId;
     if(!reqUserPoolId){
@@ -20,14 +20,14 @@ const checkToken: RequestHandler<TokenRouteParams> = (req, res, next) =>{
     tokenUse: "access",
     clientId: reqClientId,  
     });
-  
+
   try {
-    const payload = async() => await verifier.verify(
+    const payload =  await verifier.verify(
       "eyJraWQeyJhdF9oYXNoIjoidk..." // the JWT as string
     );
-    console.log("Token is valid. Payload:", payload);
-  } catch {
-    console.log("Token not valid!");
+    res.json(payload);
+  } catch(err: any) {
+   res.send(err.message)
   }
 }
 
