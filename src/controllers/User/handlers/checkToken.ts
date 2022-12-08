@@ -23,7 +23,7 @@ const checkToken: RequestHandler<TokenRouteParams> = (req, res, next) =>{
   
   try {
     const payload = async() => await verifier.verify(
-      "njnjkhjyh" // the JWT as string
+      "eyJraWQeyJhdF9oYXNoIjoidk..." // the JWT as string
     );
     console.log("Token is valid. Payload:", payload);
   } catch {
