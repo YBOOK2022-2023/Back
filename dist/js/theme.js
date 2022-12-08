@@ -1,0 +1,1 @@
+AWSCognito.config.region="eu-west-3",new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool({UserPoolId:"eu-west-3_Iekd8jDeb",ClientId:"7llslfb09dtag2h7117og3ku72"});
