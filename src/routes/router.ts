@@ -1,13 +1,26 @@
 import express from 'express';
 import {Request, Response, NextFunction} from 'express';
-import User from '../controllers/User';
-import checkToken from '../controllers/User/handlers/checkToken';
+import postController from '../controllers/Post';
+import userController from '../controllers/User';
+import frienshipController from '../controllers/Friendship';
 import cognitoAuth from '../middlewares/cognitoAuth';
 
 const router = express.Router();
 
-// router.use(cognitoAuth)
+router.use(cognitoAuth)
 
-router.get('/checktoken/:userPoolId&:clientId', checkToken)
+router.get('/token', cognitoAuth);
+
+router.get('/user', userController.getUser);
+router.post('/user', userController.createUser);
+
+router.get('/post/:id', postController.getPost);
+router.get('/postlike/:id', postController.getPostLike);
+router.get('/postcomment/:id', postController.getPostComment);
+router.post('/post', postController.createPost);
+router.post('/postlike/:postId', postController.createPostLike);
+router.post('/postcomment/:postId', postController.createPostComment);
+
+router.post('/friendship/:toID', frienshipController.createFriendship);
 
 export default router
