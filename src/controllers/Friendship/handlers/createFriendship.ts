@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import { RequestHandler } from "express";
 
 const createFriendship : RequestHandler =  async (req, res, next) =>{
-    var token = req.headers['authorization'];
     var toID = parseInt(req.params.toID);
     
     const prisma = new PrismaClient()
