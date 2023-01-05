@@ -13,6 +13,7 @@ const createUser : RequestHandler =  async (req, res, next) =>{
                 email: userInfo.email,
             },
           })
+          res.json(user);
     }
 
     main()

@@ -4,8 +4,11 @@ import postController from '../controllers/Post';
 import userController from '../controllers/User';
 import frienshipController from '../controllers/Friendship';
 import cognitoAuth from '../middlewares/cognitoAuth';
+import homeView from './home';
 
 const router = express.Router();
+
+router.get('/', homeView);
 
 router.use(cognitoAuth)
 

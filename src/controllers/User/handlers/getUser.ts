@@ -3,8 +3,6 @@ import { RequestHandler } from "express";
 
 const getUser : RequestHandler = (req, res, next) => {
     var userEmail = res.locals.user.email;
-    
-    console.log(userEmail);
     const prisma = new PrismaClient()
 
     async function main() {

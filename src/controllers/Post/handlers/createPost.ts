@@ -2,18 +2,26 @@ import { PrismaClient } from '@prisma/client';
 import { RequestHandler } from "express";
 
 const createPost : RequestHandler =  async (req, res, next) =>{
-    var token = req.headers['authorization'];
+    const userEmail = res.locals.user;
     
     const prisma = new PrismaClient()
 
     async function main() {
-        const post = await prisma.post.create({
-            data: {
-                htmlContent: "le post de l'année",
-                userId: 1,
+        const user = await prisma.user.findUnique({
+            where: {
+              email: userEmail,
             },
           })
-          res.json(post);
+
+          console.log(user);
+
+        // const post = await prisma.post.create({
+        //     data: {
+        //         htmlContent: "le post de l'année",
+        //         userId: 1,
+        //     },
+        //   })
+        //   res.json(post);
     }
 
     main()
