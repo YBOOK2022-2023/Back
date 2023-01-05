@@ -17,6 +17,7 @@ router.get('/token', cognitoAuth);
 router.get('/user', userController.getUser);
 router.post('/user', userController.createUser);
 
+
 router.get('/post/:id', postController.getPost);
 router.get('/postlike/:id', postController.getPostLike);
 router.get('/postcomment/:id', postController.getPostComment);
