@@ -23,8 +23,9 @@ router.post('/post', postController.createPost);
 router.post('/postlike/:postId', postController.createPostLike);
 router.post('/postcomment/:postId', postController.createPostComment);
 
+router.get('/friendship', frienshipController.getFriendships);
+router.get('/friendship/count', frienshipController.getFriendshipsCount);
 router.post('/friendship/:toID', frienshipController.createFriendship);
-
 router.put('/friendship/:fromID', frienshipController.putFriendship);
 
 export default router

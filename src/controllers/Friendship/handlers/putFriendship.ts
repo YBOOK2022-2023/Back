@@ -6,10 +6,7 @@ const putFriendship : RequestHandler =  async (req, res, next) =>{
     const userEmail: string = res.locals.user.email;
     const fromID: integer = parseInt(req.params.fromID);
     const statusReq = req.body.status;
-    
 
-
-    console.log(statusReq);
     if(!statusReq){
         throw new Error('missing friendship status');
     }
