@@ -1,19 +1,28 @@
 import { PrismaClient } from '@prisma/client';
+import { integer } from 'aws-sdk/clients/cloudfront';
 import { RequestHandler } from "express";
 
 const createFriendship : RequestHandler =  async (req, res, next) =>{
-    var toID = parseInt(req.params.toID);
+    const userEmail: string = res.locals.user.email;
+    var toID: integer = parseInt(req.params.toID);
     
     const prisma = new PrismaClient()
 
     async function main() {
-        const friendship = await prisma.friendship.create({
-            data: {
-                fromId: 1,
-                toId: toID
+        const user = await prisma.user.findUnique({
+            where: {
+              email: userEmail,
             },
           })
-          res.json(friendship);
+          if(user){
+            const friendship = await prisma.friendship.create({
+                data: {
+                    fromId: user.id,
+                    toId: toID
+                },
+              })
+              res.json(friendship);
+          }
     }
 
     main()

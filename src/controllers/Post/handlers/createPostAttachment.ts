@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { integer } from 'aws-sdk/clients/cloudfront';
 import { RequestHandler } from "express";
 
 const createPostAttachment : RequestHandler =  async (req, res, next) =>{
-    var token = req.headers['authorization'];
-    var postID = parseInt(req.params.postId);
+    const userEmail: string = res.locals.user.email;
+    const postID: integer = parseInt(req.params.postId);
     
     const prisma = new PrismaClient()
 

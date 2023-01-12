@@ -17,14 +17,14 @@ router.get('/token', cognitoAuth);
 router.get('/user', userController.getUser);
 router.post('/user', userController.createUser);
 
-
+router.get('/posts', postController.getPostsHome);
 router.get('/post/:id', postController.getPost);
-router.get('/postlike/:id', postController.getPostLike);
-router.get('/postcomment/:id', postController.getPostComment);
 router.post('/post', postController.createPost);
 router.post('/postlike/:postId', postController.createPostLike);
 router.post('/postcomment/:postId', postController.createPostComment);
 
 router.post('/friendship/:toID', frienshipController.createFriendship);
+
+router.put('/friendship/:fromID', frienshipController.putFriendship);
 
 export default router

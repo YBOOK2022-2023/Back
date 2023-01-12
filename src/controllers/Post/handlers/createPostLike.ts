@@ -2,19 +2,26 @@ import { PrismaClient } from '@prisma/client';
 import { RequestHandler } from "express";
 
 const createPostLike : RequestHandler =  async (req, res, next) =>{
-    var token = req.headers['authorization'];
+    const userEmail: string = res.locals.user.email;
     var postID = parseInt(req.params.postId);
     
     const prisma = new PrismaClient()
 
     async function main() {
-        const postLike = await prisma.postLike.create({
-            data: {
-                userId: 1,
-                postId: postID,
+        const user = await prisma.user.findUnique({
+            where: {
+              email: userEmail,
             },
           })
-          res.json(postLike);
+          if(user){
+            const postLike = await prisma.postLike.create({
+                data: {
+                    userId: user.id,
+                    postId: postID,
+                },
+              })
+              res.json(postLike);
+          }
     }
 
     main()

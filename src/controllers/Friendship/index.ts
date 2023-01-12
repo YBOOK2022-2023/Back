@@ -1,7 +1,7 @@
-import getFriendship from "././handlers/getFriendship";
 import createFriendship from "././handlers/createFriendship";
+import putFriendship from "././handlers/putFriendship";
 
 export default {
-    getFriendship,
-    createFriendship
+    createFriendship,
+    putFriendship
 }

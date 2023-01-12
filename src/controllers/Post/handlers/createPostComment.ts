@@ -2,25 +2,32 @@ import { PrismaClient } from '@prisma/client';
 import { RequestHandler } from "express";
 
 const createPostComment : RequestHandler =  async (req, res, next) =>{
-    var token = req.headers['authorization'];
+    const userEmail: string = res.locals.user.email;
+    const reqText: string = req.body.text;
     var postID = parseInt(req.params.postId);
-    var postText = req.body.text;
 
-    if(!postText){
+    if(!reqText){
         throw new Error('missing text');
     }
     
     const prisma = new PrismaClient()
 
     async function main() {
-        const postComment = await prisma.postComment.create({
-            data: {
-                userId: 1,
-                postId: postID,
-                text: postText
+        const user = await prisma.user.findUnique({
+            where: {
+              email: userEmail,
             },
           })
-          res.json(postComment);
+          if(user){
+            const postComment = await prisma.postComment.create({
+                data: {
+                    userId: user.id,
+                    postId: postID,
+                    text: reqText
+                },
+              })
+              res.json(postComment);
+          }
     }
 
     main()

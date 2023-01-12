@@ -1,9 +1,9 @@
 import { RequestHandler } from "express";
 import { PrismaClient } from '@prisma/client';
+import { integer } from "aws-sdk/clients/cloudfront";
 
 const getPost : RequestHandler = (req, res, next) => {
-    var token = req.headers['authorization'];
-    var idPost = parseInt(req.params.id);
+    var idPost : integer = parseInt(req.params.id);
 
     const prisma = new PrismaClient()
 
