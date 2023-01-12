@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { PrismaClient } from '@prisma/client';
 import { integer } from "aws-sdk/clients/cloudfront";
 
-const getPost : RequestHandler = (req, res, next) => {
+const getPostComments : RequestHandler = (req, res, next) => {
     var idPost : integer = parseInt(req.params.id);
 
     const prisma = new PrismaClient()
@@ -12,6 +12,9 @@ const getPost : RequestHandler = (req, res, next) => {
             where: {
               id: idPost,
             },
+            select:{
+                postComments: true,
+            }
           })
           res.json(post);
     }
@@ -27,4 +30,4 @@ const getPost : RequestHandler = (req, res, next) => {
     })
 }
 
-export default getPost
+export default getPostComments

@@ -18,10 +18,11 @@ router.get('/user', userController.getUser);
 router.post('/user', userController.createUser);
 
 router.get('/posts', postController.getPostsHome);
-router.get('/post/:id', postController.getPost);
 router.post('/post', postController.createPost);
 router.post('/postlike/:postId', postController.createPostLike);
+router.get('/postcomment/:id', postController.getPostComments);
 router.post('/postcomment/:postId', postController.createPostComment);
+
 
 router.get('/friendship', frienshipController.getFriendships);
 router.get('/friendship/count', frienshipController.getFriendshipsCount);
