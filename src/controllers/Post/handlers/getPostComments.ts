@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { integer } from "aws-sdk/clients/cloudfront";
 
 const getPostComments : RequestHandler = (req, res, next) => {
-    var idPost : integer = parseInt(req.params.id);
+    var idPost : integer = parseInt(req.params.postId);
 
     const prisma = new PrismaClient()
 
