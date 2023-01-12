@@ -10,6 +10,13 @@ const getUser : RequestHandler = (req, res, next) => {
             where: {
               email: userEmail,
             },
+            include: {
+                posts: true,
+                postLikes: true,
+                postComment: true,
+                fromFriendship: true,
+                toFrienship: true
+            }
           })
           res.json(user);
     }
