@@ -15,10 +15,14 @@ router.use(cognitoAuth)
 router.get('/token', cognitoAuth);
 
 router.get('/user', userController.getUser);
+router.get('/user/:id', userController.getUserById);
 router.post('/user', userController.createUser);
 
 router.get('/posts', postController.getPostsHome);
+router.get('/postsbyuser', postController.getPostById);
+router.get('/postprofile', postController.getProfilePosts);
 router.post('/post', postController.createPost);
+
 router.post('/postlike/:postId', postController.createPostLike);
 router.get('/postcomment/:postId', postController.getPostComments);
 router.post('/postcomment/:postId', postController.createPostComment);

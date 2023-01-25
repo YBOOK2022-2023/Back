@@ -1,14 +1,22 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 import { RequestHandler } from "express";
 
-const getUser : RequestHandler = (req, res, next) => {
+const getUserById : RequestHandler = (req, res, next) => {
+    var userId : number = parseInt(req.params.id);
     var userEmail : string = res.locals.user.email;
     const prisma = new PrismaClient()
 
     async function main() {
         const user = await prisma.user.findUnique({
             where: {
-              email: userEmail,
+              id: userId,
+            },
+            include: {
+                posts: true,
+                postLikes: true,
+                postComment: true,
+                fromFriendship: true,
+                toFrienship: true
             }
           })
           res.json(user);
@@ -25,4 +33,4 @@ const getUser : RequestHandler = (req, res, next) => {
     })
 }
 
-export default getUser
+export default getUserById
