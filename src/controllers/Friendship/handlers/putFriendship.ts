@@ -4,9 +4,10 @@ import { RequestHandler } from "express";
 
 const putFriendship : RequestHandler =  async (req, res, next) =>{
     const userEmail: string = res.locals.user.email;
-    const fromID: integer = parseInt(req.params.fromID);
+    const friendshipId: integer = parseInt(req.params.friendshipId);
     const statusReq = req.body.status;
-
+    console.log(statusReq);
+    console.log(friendshipId)
     if(!statusReq){
         throw new Error('missing friendship status');
     }
@@ -22,14 +23,7 @@ const putFriendship : RequestHandler =  async (req, res, next) =>{
           if(user){
             const idFriendship = await prisma.friendship.findFirst({
                 where: {
-                    AND:[
-                        {
-                            fromId: fromID
-                        },
-                        {
-                            toId: user.id
-                        }
-                    ]
+                  id: friendshipId,
                 },
               });
               if(idFriendship){

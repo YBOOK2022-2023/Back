@@ -4,7 +4,7 @@ import { RequestHandler } from "express";
 
 const createFriendship : RequestHandler =  async (req, res, next) =>{
     const userEmail: string = res.locals.user.email;
-    var toID: integer = parseInt(req.params.toID);
+    const toID: integer = parseInt(req.body.toID);
     
     const prisma = new PrismaClient()
 
@@ -12,7 +12,7 @@ const createFriendship : RequestHandler =  async (req, res, next) =>{
         const user = await prisma.user.findUnique({
             where: {
               email: userEmail,
-            },
+            }
           })
           if(user){
             const friendship = await prisma.friendship.create({

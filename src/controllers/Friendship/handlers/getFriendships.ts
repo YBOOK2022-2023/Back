@@ -12,6 +12,15 @@ const getFriendships : RequestHandler =  async (req, res, next) =>{
             where: {
               email: userEmail,
             },
+            include: {
+                posts: true,
+                postLikes: true,
+                postComment: true,
+                fromFriendship: true,
+                toFrienship: true,
+                blockedUsers :true,
+                blockedByUsers:true
+            }
           })
           if(user){
             const friendships = await prisma.friendship.findMany({
@@ -31,9 +40,89 @@ const getFriendships : RequestHandler =  async (req, res, next) =>{
                            ] 
                         }
                     ]
+                },
+                include:{
+                    from:{
+                        select:{
+                            id: true,
+                            firstname: true,
+                            lastname: true,
+                            avatarS3Key: true,
+                        },
+                    } ,
+                    to:{
+                        select:{
+                            id: true,
+                            firstname: true,
+                            lastname: true,
+                            avatarS3Key: true,
+                        },
+                    }
                 }
               })
-              res.json(friendships);
+              const friendshipPending=await prisma.friendship.findMany({
+                where:{
+                    AND:[
+                        {
+                            status: 'PENDING'
+                        },
+                        {
+                           OR:[
+                                {
+                                    fromId: user.id
+                                },
+                                {
+                                    toId: user.id
+                                }
+                           ] 
+                        }
+                    ]
+                },
+                include:{
+                    from:{
+                        select:{
+                            id: true,
+                            firstname: true,
+                            lastname: true,
+                            avatarS3Key: true,
+                        },
+                    } ,
+                    to:{
+                        select:{
+                            id: true,
+                            firstname: true,
+                            lastname: true,
+                            avatarS3Key: true,
+                        },
+                    }
+                }
+              })
+             
+                const friendshipCount = await prisma.friendship.count({
+                    where:{
+                        AND:[
+                            {
+                                status: 'ACCEPTED'
+                            },
+                            {
+                               OR:[
+                                    {
+                                        fromId: user.id
+                                    },
+                                    {
+                                        toId: user.id
+                                    }
+                               ] 
+                            }
+                        ]
+                    }
+                  })
+            
+             
+              const friendshipsWithUsers = [];
+              friendshipsWithUsers.push({user: user,friendships: friendships,friendshipPending:friendshipPending,count:friendshipCount});
+  
+              res.json(friendshipsWithUsers);
           }
     }
 

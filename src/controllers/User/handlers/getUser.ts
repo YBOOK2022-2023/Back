@@ -10,9 +10,11 @@ const getUser : RequestHandler = (req, res, next) => {
             where: {
               email: userEmail,
             }
+            
           })
           res.json(user);
     }
+    
 
     main()
     .then(async () => {

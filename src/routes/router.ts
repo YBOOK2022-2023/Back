@@ -17,6 +17,7 @@ router.get('/token', cognitoAuth);
 router.get('/user', userController.getUser);
 router.get('/user/:id', userController.getUserById);
 router.post('/user', userController.createUser);
+router.get('/usersearch/:searchUser', userController.getResearchUser);
 
 router.get('/posts', postController.getPostsHome);
 router.get('/postsbyuser', postController.getPostById);
@@ -30,7 +31,7 @@ router.post('/postcomment/:postId', postController.createPostComment);
 
 router.get('/friendship', frienshipController.getFriendships);
 router.get('/friendship/count', frienshipController.getFriendshipsCount);
-router.post('/friendship/:toID', frienshipController.createFriendship);
-router.put('/friendship/:fromID', frienshipController.putFriendship);
+router.post('/friendship', frienshipController.createFriendship);
+router.put('/friendship/:friendshipId', frienshipController.putFriendship);
 
 export default router

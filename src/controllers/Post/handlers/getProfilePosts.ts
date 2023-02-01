@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { RequestHandler } from "express";
 
+//Utilisé pour la récupération des posts d'un utilisateur sur sa page profil
 const getProfilePosts: RequestHandler=(req, res, next) => {
     const userEmail: string = res.locals.user.email;
     const prisma = new PrismaClient();
@@ -34,7 +35,6 @@ const getProfilePosts: RequestHandler=(req, res, next) => {
                     post:{
                         include: {
                             user: true,
-                            
                             postLikes: true,
                             postComments: true,
                             postAttachments: true,     
@@ -50,7 +50,6 @@ const getProfilePosts: RequestHandler=(req, res, next) => {
                 },
                 include: {
                     user:true,
-                    
                     postLikes: true,
                     postComments: true,
                     postAttachments: true,
@@ -72,9 +71,29 @@ const getProfilePosts: RequestHandler=(req, res, next) => {
                         }
                     }
                 }
-            })       
+            }) 
+            
+            const friendshipCount = await prisma.friendship.count({
+                where:{
+                    AND:[
+                        {
+                            status: 'ACCEPTED'
+                        },
+                        {
+                           OR:[
+                                {
+                                    fromId: user.id
+                                },
+                                {
+                                    toId: user.id
+                                }
+                           ] 
+                        }
+                    ]
+                }
+              })      
             const profilePosts=[];
-              profilePosts.push({user:user,posted:posted,likedPost:likedPosts.map(like => like.post),commentedPost:postCommented})  
+              profilePosts.push({user:user,posted:posted,likedPost:likedPosts.map(like => like.post),commentedPost:postCommented,friendcount:friendshipCount})  
            res.json(profilePosts);
         }
     }

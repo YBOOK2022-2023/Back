@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import createError from 'http-errors';
 import express from 'express';
-
+import {Server } from 'socket.io'
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';

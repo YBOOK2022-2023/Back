@@ -14,7 +14,7 @@ const getFriendshipsCount : RequestHandler =  async (req, res, next) =>{
             },
           })
           if(user){
-            const friendships = await prisma.friendship.count({
+            const friendshipsCount = await prisma.friendship.count({
                 where:{
                     AND:[
                         {
@@ -33,7 +33,9 @@ const getFriendshipsCount : RequestHandler =  async (req, res, next) =>{
                     ]
                 }
               })
-              res.json(friendships);
+              const friendshipsInfo = []
+              friendshipsInfo.push({user:user,count:friendshipsCount})
+              res.json(friendshipsInfo);
           }
     }
 
