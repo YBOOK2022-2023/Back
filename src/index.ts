@@ -7,12 +7,13 @@
 var app = require('./app');
 var debug = require('debug')('ybook:server');
 var http = require('http');
+const { Server }= require("socket.io")
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
 /**
@@ -20,6 +21,17 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+process.on('uncaughtException', error => {
+  console.error("CRITICAL: UNCAUGHT ERROR")
+  console.error(error)
+});
+
+/**
+ * Create Socket.io server
+ * 
+ *
+ */
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -33,7 +45,7 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
+function normalizePort(val: any) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -53,7 +65,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError(error: any) {
   if (error.syscall !== 'listen') {
     throw error;
   }

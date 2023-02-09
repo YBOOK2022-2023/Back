@@ -31,18 +31,19 @@ model User {
   firstname             String                @db.VarChar(100)
   lastname              String                @db.VarChar(100)
   email                 String                @unique
-  avatarS3Key           String                @db.VarChar(255)
-  coverPicS3Key         String                @db.VarChar(255)
-  Posts                 Post[]
-  PostLikes             PostLike[]
-  PostComment           PostComment[]
-  FromFriendship        Friendship[]          @relation("FromFriendship")
-  ToFrienship           Friendship[]          @relation("ToFriendship")
-  BlockedUsers          User[]                @relation("UserBlocks")
-  BlockedByUsers        User[]                @relation("UserBlocks")
-  ConversationsSent     Conversation[]        @relation("ConversationsSent")
-  ConversationsReceived Conversation[]        @relation("ConversationsReceived")
-  ConversationMessages  ConversationMessage[]
+  avatarS3Key           String  ?              @db.VarChar(255)
+  coverPicS3Key         String?                @db.VarChar(255)
+  posts                 Post[]
+  postLikes             PostLike[]
+  postComment           PostComment[]
+  fromFriendship        Friendship[]          @relation("FromFriendship")
+  toFrienship           Friendship[]          @relation("ToFriendship")
+  blockedUsers          User[]                @relation("UserBlocks")
+  blockedByUsers        User[]                @relation("UserBlocks")
+  conversationsSent     Conversation[]        @relation("ConversationsSent")
+  conversationsReceived Conversation[]        @relation("ConversationsReceived")
+  conversationMessages  ConversationMessage[]
+  config                Json?
 }
 
 model Post {
@@ -50,18 +51,19 @@ model Post {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   htmlContent  String
-  User         User          @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
   userId       Int
-  PostLikes    PostLike[]
-  PostComments PostComment[]
+  postLikes    PostLike[]
+  postComments PostComment[]
+  postAttachments PostAttachment[]
 }
 
 model PostLike {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  User      User     @relation(fields: [userId], references: [id])
-  Post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
   userId    Int
   postId    Int
 }
@@ -70,8 +72,8 @@ model PostComment {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  User      User     @relation(fields: [userId], references: [id])
-  Post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
   userId    Int
   postId    Int
   text      String
@@ -79,6 +81,8 @@ model PostComment {
 
 model PostAttachment {
   id    Int          @id @default(autoincrement())
+  post  Post         @relation(fields: [postId], references: [id])
+  postId Int
   type  DocumentType
   s3Key String       @db.VarChar(255)
 }
@@ -92,29 +96,30 @@ model Friendship {
   status       FriendshipStatus @default(PENDING)
   fromId       Int
   toId         Int
-  Notification Notification[]
+  notification Notification[]
 }
 
 model Conversation {
   id        Int                   @id @default(autoincrement())
   createdAt DateTime              @default(now())
   updatedAt DateTime              @updatedAt
-  From      User                  @relation("ConversationsSent", fields: [fromId], references: [id])
+  from      User                  @relation("ConversationsSent", fields: [fromId], references: [id])
   fromId    Int
-  To        User?                 @relation("ConversationsReceived", fields: [toId], references: [id])
+  to        User?                 @relation("ConversationsReceived", fields: [toId], references: [id])
   toId      Int?
-  Messages  ConversationMessage[]
+  messages  ConversationMessage[]
 }
 
 model ConversationMessage {
   id             Int            @id @default(autoincrement())
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
-  Conversation   Conversation?  @relation(fields: [conversationId], references: [id])
+  conversation   Conversation?  @relation(fields: [conversationId], references: [id])
   conversationId Int?
-  From           User           @relation(fields: [userId], references: [id])
+  from           User           @relation(fields: [userId], references: [id])
   userId         Int
-  Notification   Notification[]
+  notification   Notification[]
+  content        String
 }
 
 model Notification {
@@ -122,8 +127,8 @@ model Notification {
   createdAt             DateTime             @default(now())
   updatedAt             DateTime             @updatedAt
   read                  Boolean              @default(false)
-  Friendship            Friendship?          @relation(fields: [friendshipId], references: [id])
+  friendship            Friendship?          @relation(fields: [friendshipId], references: [id])
   friendshipId          Int?
-  Message               ConversationMessage? @relation(fields: [conversationMessageId], references: [id])
+  message               ConversationMessage? @relation(fields: [conversationMessageId], references: [id])
   conversationMessageId Int?
 }
